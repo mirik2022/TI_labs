@@ -18,13 +18,12 @@ namespace CryptoLab1
         // Кнопка "Выполнить"
         private void btnExecute_Click(object sender, EventArgs e)
         {
-            // Сбрасываем глобальную переменную
-            //CipherEngine.Reset();
 
-            string inputText = txtInput.Text;  // Читаем из поля ввода
+
+            string inputText = txtInput.Text;  
             string key = txtKey.Text.Trim();
             int algorithm = comboBoxAlgorithm.SelectedIndex;
-            int mode = comboBoxMode.SelectedIndex; // 0 = Encrypt, 1 = Decrypt
+            int mode = comboBoxMode.SelectedIndex;
 
             // Проверки
             if (string.IsNullOrEmpty(inputText))
@@ -60,7 +59,6 @@ namespace CryptoLab1
                         result = CipherEngine.VigenereDecrypt(inputText, key);
                 }
 
-                // ВЫВОДИМ РЕЗУЛЬТАТ В ОТДЕЛЬНОЕ ПОЛЕ
                 txtResult.Text = result;
             }
             catch (Exception ex)
@@ -70,7 +68,7 @@ namespace CryptoLab1
             }
         }
 
-        // Кнопка "Загрузить из файла"
+        // Кнопка Загрузить из файла
         private void btnLoadFile_Click(object sender, EventArgs e)
         {
             openFileDialog.Filter = "Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*";
@@ -79,8 +77,8 @@ namespace CryptoLab1
                 try
                 {
                     string fileContent = File.ReadAllText(openFileDialog.FileName, Encoding.UTF8);
-                    txtInput.Text = fileContent;  // Загружаем в поле ввода
-                    txtResult.Clear();             // Очищаем результат
+                    txtInput.Text = fileContent;  
+                    txtResult.Clear();           
                 }
                 catch (Exception ex)
                 {
@@ -90,7 +88,7 @@ namespace CryptoLab1
             }
         }
 
-        // Кнопка "Сохранить в файл"
+        // Кнопка Сохранить в файл
         private void btnSaveFile_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(txtResult.Text))
@@ -128,4 +126,5 @@ namespace CryptoLab1
 
         }
     }
+
 }
