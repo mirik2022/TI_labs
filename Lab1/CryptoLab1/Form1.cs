@@ -10,7 +10,7 @@ namespace CryptoLab1
         public Form1()
         {
             InitializeComponent();
-            // Установка начальных значений
+
             comboBoxAlgorithm.SelectedIndex = 0;
             comboBoxMode.SelectedIndex = 0;
         }
@@ -128,3 +128,4 @@ namespace CryptoLab1
     }
 
 }
+
