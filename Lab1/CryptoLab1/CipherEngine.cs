@@ -8,6 +8,7 @@ namespace CryptoLab1
     {
 
         private const string RussianAlphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+        private const char PaddingChar = '#';
         public static int OriginalTextLength { get; private set; }
 
         public static void Reset()
@@ -15,20 +16,44 @@ namespace CryptoLab1
             OriginalTextLength = 0;
         }
 
-        // Оставляет в тексте только русские буквы
+        // Оставляет в тексте только русские буквы (Для обычного текста и ключа)
         private static string FilterRussianText(string input)
         {
             if (string.IsNullOrEmpty(input)) return "";
 
             string result = "";
+            for (int i = 0; i < input.Length; i++)
+            {
+                char upperC = char.ToUpperInvariant(input[i]);
+                for (int j = 0; j < RussianAlphabet.Length; j++)
+                {
+                    if (RussianAlphabet[j] == upperC)
+                    {
+                        result += upperC;
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
 
-            // Перебираем каждый символ во входной строке
+        // фильтр для шифротекста (в столбцовом методе)
+        private static string FilterCipherText(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return "";
+
+            string result = "";
             for (int i = 0; i < input.Length; i++)
             {
                 char c = input[i];
-                char upperC = char.ToUpperInvariant(c); 
 
-                // Проверяем, есть ли этот символ в нашем алфавите
+                if (c == PaddingChar)
+                {
+                    result += c;
+                    continue;
+                }
+
+                char upperC = char.ToUpperInvariant(c);
                 for (int j = 0; j < RussianAlphabet.Length; j++)
                 {
                     if (RussianAlphabet[j] == upperC)
@@ -66,91 +91,83 @@ namespace CryptoLab1
             return RussianAlphabet[index];
         }
 
+        // Пузырьковая сортировка для получения порядка столбцов
+        private static int[] GetColumnOrder(string key)
+        {
+            int[] indices = new int[key.Length];
+            for (int i = 0; i < key.Length; i++)
+                indices[i] = i;
 
+            // Сортируем индексы по соответствующим буквам ключа
+            for (int i = 0; i < key.Length - 1; i++)
+            {
+                for (int j = 0; j < key.Length - i - 1; j++)
+                {
+                    if (key[indices[j]] > key[indices[j + 1]])
+                    {
+                        int temp = indices[j];
+                        indices[j] = indices[j + 1];
+                        indices[j + 1] = temp;
+                    }
+                }
+            }
+            return indices;
+        }
 
         // Шифрование Столбцовым методом
         public static string ColumnarEncrypt(string plainText, string key)
         {
             try
             {
-                //Фильтруем текст
                 string filteredText = FilterRussianText(plainText);
                 if (string.IsNullOrEmpty(filteredText)) return "";
 
                 OriginalTextLength = filteredText.Length;
 
-                //Фильтруем ключ
                 string filteredKey = FilterRussianText(key);
                 if (string.IsNullOrEmpty(filteredKey))
-                {
                     return "ОШИБКА: Ключ не содержит ни одной русской буквы!";
-                }
 
-                // Определяем размеры таблицы
-                int numCols = filteredKey.Length;   
-                int numRows = (int)Math.Ceiling((double)filteredText.Length / numCols);
+                int cols = filteredKey.Length;
+                int rows = (int)Math.Ceiling((double)filteredText.Length / cols);
 
-                char[,] table = new char[numRows, numCols];
-                int textIndex = 0;
+                // Создаем таблицу и заполняем
+                char[,] table = new char[rows, cols];
+                int textPos = 0;
 
-                // Заполняем таблицу текстом по строкам
-                for (int row = 0; row < numRows; row++)
+                for (int r = 0; r < rows; r++)
                 {
-                    for (int col = 0; col < numCols; col++)
+                    for (int c = 0; c < cols; c++)
                     {
-                        if (textIndex < filteredText.Length)
+                        if (textPos < filteredText.Length)
                         {
-                            table[row, col] = filteredText[textIndex];
-                            textIndex++;
+                            table[r, c] = filteredText[textPos];
+                            textPos++;
                         }
                         else
                         {
-                            // Текст закончился - заполняем пустые ячейки буквами по порядку
-                            table[row, col] = RussianAlphabet[(row * numCols + col - filteredText.Length) % RussianAlphabet.Length];
+                            table[r, c] = PaddingChar;
                         }
                     }
                 }
 
-                // Определяем порядок чтения столбцов на основе ключа
-                int[] columnOrder = new int[numCols];
+                // Получаем порядок столбцов
+                int[] columnOrder = GetColumnOrder(filteredKey);
 
-                // Создаем массив для сортировки
-                int[] keyIndices = new int[numCols];
-                for (int i = 0; i < numCols; i++)
+                // Читаем по столбцам
+                string result = "";
+                for (int i = 0; i < cols; i++)
                 {
-                    keyIndices[i] = i;
-                }
-
-                // Сортируем пузырьком (keyIndices содержит порядок чтения столбцов)
-                for (int i = 0; i < numCols - 1; i++)
-                {
-                    for (int j = 0; j < numCols - i - 1; j++)
+                    int col = columnOrder[i];
+                    for (int r = 0; r < rows; r++)
                     {
-                        if (filteredKey[keyIndices[j]] > filteredKey[keyIndices[j + 1]])
-                        {
-                            int temp = keyIndices[j];
-                            keyIndices[j] = keyIndices[j + 1];
-                            keyIndices[j + 1] = temp;
-                        }
+                        result += table[r, col];
                     }
                 }
 
-                // Читаем столбцы в этом порядке
-                string cipherText = "";
-
-                for (int i = 0; i < numCols; i++)
-                {
-                    int colToRead = keyIndices[i];
-
-                    for (int row = 0; row < numRows; row++)
-                    {
-                        cipherText += table[row, colToRead];
-                    }
-                }
-
-                return cipherText;
+                return result;
             }
-            catch (Exception)
+            catch
             {
                 return "ОШИБКА";
             }
@@ -161,85 +178,53 @@ namespace CryptoLab1
         {
             try
             {
-                // Фильтруем шифротекст
-                string filteredText = FilterRussianText(cipherText);
+                // ИСПРАВЛЕНО: используем специальный фильтр для шифротекста
+                string filteredText = FilterCipherText(cipherText);
                 if (string.IsNullOrEmpty(filteredText)) return "";
 
-                // Фильтруем ключ
                 string filteredKey = FilterRussianText(key);
                 if (string.IsNullOrEmpty(filteredKey))
-                {
-                    throw new ArgumentException("Ключ должен содержать хотя бы одну русскую букву");
-                }
+                    return "ОШИБКА: Ключ не содержит ни одной русской буквы!";
 
-                // Определяем размеры таблицы
-                int numCols = filteredKey.Length;
-                int numRows = (int)Math.Ceiling((double)filteredText.Length / numCols);
+                int cols = filteredKey.Length;
+                int rows = (int)Math.Ceiling((double)filteredText.Length / cols);
 
-                // Определяем порядок чтения столбцов
-                int[] keyIndices = new int[numCols];
-                for (int i = 0; i < numCols; i++)
-                {
-                    keyIndices[i] = i;
-                }
+                // Получаем порядок столбцов
+                int[] columnOrder = GetColumnOrder(filteredKey);
 
-                // Сортируем пузырьком
-                for (int i = 0; i < numCols - 1; i++)
+                // Создаем пустую таблицу
+                char[,] table = new char[rows, cols];
+                int textPos = 0;
+
+                // Заполняем по столбцам в правильном порядке
+                for (int i = 0; i < cols; i++)
                 {
-                    for (int j = 0; j < numCols - i - 1; j++)
+                    int col = columnOrder[i];
+                    for (int r = 0; r < rows; r++)
                     {
-                        if (filteredKey[keyIndices[j]] > filteredKey[keyIndices[j + 1]])
+                        if (textPos < filteredText.Length)
                         {
-                            int temp = keyIndices[j];
-                            keyIndices[j] = keyIndices[j + 1];
-                            keyIndices[j + 1] = temp;
+                            table[r, col] = filteredText[textPos];
+                            textPos++;
                         }
                     }
                 }
 
-                char[,] table = new char[numRows, numCols];
-
-                // Заполняем таблицу по столбцам из шифротекста
-                int textIndex = 0;
-
-                for (int i = 0; i < numCols; i++)
+                // Читаем по строкам
+                string result = "";
+                for (int r = 0; r < rows; r++)
                 {
-                    int colToWrite = keyIndices[i];
-
-                    for (int row = 0; row < numRows; row++)
+                    for (int c = 0; c < cols; c++)
                     {
-                        if (textIndex < filteredText.Length)
-                        {
-                            table[row, colToWrite] = filteredText[textIndex];
-                            textIndex++;
-                        }
-                        else
-                        {
-                            table[row, colToWrite] = '?';
-                        }
+                        result += table[r, c];
                     }
                 }
 
-                // Читаем таблицу построчно
-                string plainText = "";
-
-                for (int row = 0; row < numRows; row++)
-                {
-                    for (int col = 0; col < numCols; col++)
-                    {
-                        plainText += table[row, col];
-                    }
-                }
-
-                // Обрезаем до нужной длины
-                if (OriginalTextLength > 0 && OriginalTextLength <= plainText.Length)
-                {
-                    plainText = plainText.Substring(0, OriginalTextLength);
-                }
-
-                return plainText;
+                // Удаляем все символы # в конце
+                result = result.TrimEnd(PaddingChar);
+                return result;
             }
-            catch (Exception)
+            catch
             {
                 return "ОШИБКА";
             }
@@ -277,7 +262,6 @@ namespace CryptoLab1
                 for (int i = 0; i < filteredText.Length; i++)
                 {
                     int pIndex = GetLetterIndex(filteredText[i]);
-
                     int kIndex = GetLetterIndex(keyStream[i]);
 
                     // Складываем индексы (Ci = Pi + Ki mod 33)
@@ -306,7 +290,7 @@ namespace CryptoLab1
         {
             try
             {
-                // Фильтруем шифротекст
+                // Фильтруем шифротекст (для Виженера # быть не должно, но оставим FilterRussianText)
                 string filteredCipher = FilterRussianText(cipherText);
                 if (string.IsNullOrEmpty(filteredCipher)) return "";
 
@@ -331,7 +315,6 @@ namespace CryptoLab1
                 for (int i = 0; i < filteredCipher.Length; i++)
                 {
                     int cIndex = GetLetterIndex(filteredCipher[i]);
-
                     int kIndex = GetLetterIndex(keyStream[i]);
 
                     // Вычитаем индексы (Pi = Ci - Ki mod 33)
