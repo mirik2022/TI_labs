@@ -42,7 +42,7 @@ namespace CryptoLab1
             string result = "";
 
             try
-            {   
+            {
                 // Столбцовый метод
                 if (algorithm == 0)
                 {
@@ -71,7 +71,7 @@ namespace CryptoLab1
         // Кнопка Загрузить из файла
         private void btnLoadFile_Click(object sender, EventArgs e)
         {
-            openFileDialog.Filter = "Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*";
+            openFileDialog.Filter = "Текстовые файлы (*.txt)";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 try
@@ -96,7 +96,7 @@ namespace CryptoLab1
                 return;
             }
 
-            saveFileDialog.Filter = "Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*";
+            saveFileDialog.Filter = "Текстовые файлы (*.txt)";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 try
