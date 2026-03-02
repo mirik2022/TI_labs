@@ -15,43 +15,44 @@ namespace CryptoLab1
             comboBoxMode.SelectedIndex = 0;
         }
 
-        // Кнопка "Выполнить"
+        // Кнопка Выполнить
         private void btnExecute_Click(object sender, EventArgs e)
         {
 
-
-            string inputText = txtInput.Text;  
+            string inputText = txtInput.Text;
             string key = txtKey.Text.Trim();
             int algorithm = comboBoxAlgorithm.SelectedIndex;
+
+            // 0 = Encrypt, 1 = Decrypt
             int mode = comboBoxMode.SelectedIndex;
 
             // Проверки
             if (string.IsNullOrEmpty(inputText))
             {
-                MessageBox.Show("Введите текст или загрузите файл.", "Ошибка",
-                    MessageBoxButtons.OK);
+                MessageBox.Show("Введите текст или загрузите файл.", "Ошибка");
                 return;
             }
 
             if (string.IsNullOrEmpty(key))
             {
-                MessageBox.Show("Введите ключ.", "Ошибка",
-                    MessageBoxButtons.OK);
+                MessageBox.Show("Введите ключ.", "Ошибка");
                 return;
             }
 
             string result = "";
 
             try
-            {
-                if (algorithm == 0) // Столбцовый метод
+            {   
+                // Столбцовый метод
+                if (algorithm == 0)
                 {
                     if (mode == 0)
                         result = CipherEngine.ColumnarEncrypt(inputText, key);
                     else
                         result = CipherEngine.ColumnarDecrypt(inputText, key);
                 }
-                else // Шифр Виженера
+                // Шифр Виженера
+                else
                 {
                     if (mode == 0)
                         result = CipherEngine.VigenereEncrypt(inputText, key);
@@ -63,8 +64,7 @@ namespace CryptoLab1
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка");
             }
         }
 
@@ -77,13 +77,12 @@ namespace CryptoLab1
                 try
                 {
                     string fileContent = File.ReadAllText(openFileDialog.FileName, Encoding.UTF8);
-                    txtInput.Text = fileContent;  
-                    txtResult.Clear();           
+                    txtInput.Text = fileContent;
+                    txtResult.Clear();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Ошибка при чтении файла: {ex.Message}", "Ошибка",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Ошибка при чтении файла: {ex.Message}", "Ошибка");
                 }
             }
         }
@@ -93,8 +92,7 @@ namespace CryptoLab1
         {
             if (string.IsNullOrEmpty(txtResult.Text))
             {
-                MessageBox.Show("Нет результата для сохранения.", "Ошибка",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Нет результата для сохранения.", "Ошибка");
                 return;
             }
 
@@ -103,15 +101,13 @@ namespace CryptoLab1
             {
                 try
                 {
-                    // Сохраняем РЕЗУЛЬТАТ, а не исходный текст
+                    // Сохраняем результат
                     File.WriteAllText(saveFileDialog.FileName, txtResult.Text, Encoding.UTF8);
-                    MessageBox.Show("Файл успешно сохранен!", "Успех",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Файл успешно сохранен!", "Успех");
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Ошибка при сохранении файла: {ex.Message}", "Ошибка",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Ошибка при сохранении файла: {ex.Message}", "Ошибка");
                 }
             }
         }
@@ -126,6 +122,4 @@ namespace CryptoLab1
 
         }
     }
-
 }
-
