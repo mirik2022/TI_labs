@@ -61,7 +61,7 @@ namespace CryptoLab1
         private static char GetLetterByIndex(int index)
         {
             if (index < 0 || index >= RussianAlphabet.Length)
-                throw new ArgumentOutOfRangeException(nameof(index), $"Индекс {index} должен быть от 0 до 32");
+                return '?';
 
             return RussianAlphabet[index];
         }
