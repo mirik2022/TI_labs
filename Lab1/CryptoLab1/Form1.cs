@@ -71,7 +71,7 @@ namespace CryptoLab1
         // Кнопка Загрузить из файла
         private void btnLoadFile_Click(object sender, EventArgs e)
         {
-            openFileDialog.Filter = "Текстовые файлы (*.txt)";
+            openFileDialog.Filter = "Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 try
@@ -96,7 +96,7 @@ namespace CryptoLab1
                 return;
             }
 
-            saveFileDialog.Filter = "Текстовые файлы (*.txt)";
+            saveFileDialog.Filter = "Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 try
