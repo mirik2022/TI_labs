@@ -178,7 +178,7 @@ namespace CryptoLab1
         {
             try
             {
-                // ИСПРАВЛЕНО: используем специальный фильтр для шифротекста
+                // используем специальный фильтр для шифротекста
                 string filteredText = FilterCipherText(cipherText);
                 if (string.IsNullOrEmpty(filteredText)) return "";
 
@@ -290,7 +290,7 @@ namespace CryptoLab1
         {
             try
             {
-                // Фильтруем шифротекст (для Виженера # быть не должно, но оставим FilterRussianText)
+                // Фильтруем шифротекст
                 string filteredCipher = FilterRussianText(cipherText);
                 if (string.IsNullOrEmpty(filteredCipher)) return "";
 
@@ -339,3 +339,4 @@ namespace CryptoLab1
         }
     }
 }
+
