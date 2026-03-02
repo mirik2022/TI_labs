@@ -1,405 +1,356 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System;
 using System.Text;
-using System.Diagnostics;
 
 namespace CryptoLab1
 {
-    // Класс для  алгоритмов шифрования
+    // Класс с алгоритмами шифрования
     public static class CipherEngine
     {
+
         private const string RussianAlphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
-
         public static int OriginalTextLength { get; private set; }
-
-        // Очищает строку, оставляя только русские буквы (приводит к ВЕРХНЕМУ регистру)
-        private static string FilterRussianText(string input)
-        {
-            if (string.IsNullOrEmpty(input)) return "";
-
-            StringBuilder result = new StringBuilder();
-            foreach (char c in input)
-            {
-                char upperC = char.ToUpperInvariant(c);
-                if (RussianAlphabet.Contains(upperC))
-                {
-                    result.Append(upperC);
-                }
-            }
-            return result.ToString();
-        }
-
-        // Возвращает индекс буквы в русском алфавите
-        private static int GetLetterIndex(char c)
-        {
-            char upperC = char.ToUpperInvariant(c);
-            int index = RussianAlphabet.IndexOf(upperC);
-            if (index == -1)
-            {
-                throw new ArgumentException($"Символ '{c}' не является русской буквой");
-            }
-            return index;
-        }
-
-        /// Возвращает букву по индексу
-        private static char GetLetterByIndex(int index)
-        {
-            if (index < 0 || index >= RussianAlphabet.Length)
-                throw new ArgumentOutOfRangeException(nameof(index), $"Индекс {index} выходит за пределы алфавита (0-{RussianAlphabet.Length - 1})");
-            return RussianAlphabet[index];
-        }
-
-        /// Создает список с номерами для повторяющихся букв в ключе
-        private static List<(char letter, int occurrence, int originalIndex)> ProcessKeyWithOccurrences(string key)
-        {
-            var result = new List<(char, int, int)>();
-            var occurrenceCount = new Dictionary<char, int>();
-
-            for (int i = 0; i < key.Length; i++)
-            {
-                char letter = key[i];
-                if (occurrenceCount.ContainsKey(letter))
-                {
-                    occurrenceCount[letter]++;
-                }
-                else
-                {
-                    occurrenceCount[letter] = 1;
-                }
-                result.Add((letter, occurrenceCount[letter], i));
-            }
-            return result;
-        }
 
         public static void Reset()
         {
             OriginalTextLength = 0;
         }
 
-        //СТОЛБЦОВЫЙ МЕТОД
+        // Оставляет в тексте только русские буквы
+        private static string FilterRussianText(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return "";
+
+            string result = "";
+
+            // Перебираем каждый символ во входной строке
+            for (int i = 0; i < input.Length; i++)
+            {
+                char c = input[i];
+                char upperC = char.ToUpperInvariant(c); 
+
+                // Проверяем, есть ли этот символ в нашем алфавите
+                for (int j = 0; j < RussianAlphabet.Length; j++)
+                {
+                    if (RussianAlphabet[j] == upperC)
+                    {
+                        result += upperC;
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
+
+        // Получает индекс буквы в алфавите
+        private static int GetLetterIndex(char c)
+        {
+            char upperC = char.ToUpperInvariant(c);
+
+            // Ищем букву в алфавите
+            for (int i = 0; i < RussianAlphabet.Length; i++)
+            {
+                if (RussianAlphabet[i] == upperC)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        // Получает букву по её индексу 
+        private static char GetLetterByIndex(int index)
+        {
+            if (index < 0 || index >= RussianAlphabet.Length)
+                throw new ArgumentOutOfRangeException(nameof(index), $"Индекс {index} должен быть от 0 до 32");
+
+            return RussianAlphabet[index];
+        }
+
+
+
+        // Шифрование Столбцовым методом
         public static string ColumnarEncrypt(string plainText, string key)
         {
             try
             {
-                Debug.WriteLine("\nСТОЛБЦОВЫЙ МЕТОД (ШИФРОВАНИЕ)");
-
+                //Фильтруем текст
                 string filteredText = FilterRussianText(plainText);
                 if (string.IsNullOrEmpty(filteredText)) return "";
 
-                // СОХРАНЯЕМ ДЛИНУ В ГЛОБАЛЬНУЮ ПЕРЕМЕННУЮ
                 OriginalTextLength = filteredText.Length;
-                Debug.WriteLine($"1. Текст: {filteredText}");
-                Debug.WriteLine($"   Длина: {OriginalTextLength}");
 
+                //Фильтруем ключ
                 string filteredKey = FilterRussianText(key);
                 if (string.IsNullOrEmpty(filteredKey))
                 {
-                    string errorMsg = "ОШИБКА: Ключ не содержит ни одной русской буквы!";
-                    Debug.WriteLine(errorMsg);
                     return "ОШИБКА: Ключ не содержит ни одной русской буквы!";
                 }
 
-                var keyWithOccurrences = ProcessKeyWithOccurrences(filteredKey);
-                Debug.WriteLine($"2. Ключ: {filteredKey}");
-                Debug.WriteLine($"   Длина: {filteredKey.Length}");
-
-                int numCols = filteredKey.Length;
+                // Определяем размеры таблицы
+                int numCols = filteredKey.Length;   
                 int numRows = (int)Math.Ceiling((double)filteredText.Length / numCols);
-                Debug.WriteLine($"3. Таблица: {numRows} × {numCols}");
 
-                // Заполняем таблицу
                 char[,] table = new char[numRows, numCols];
                 int textIndex = 0;
 
-                // Счетчик для заполнителей
-                int paddingCount = 0;
-
-                for (int r = 0; r < numRows; r++)
+                // Заполняем таблицу текстом по строкам
+                for (int row = 0; row < numRows; row++)
                 {
-                    for (int c = 0; c < numCols; c++)
+                    for (int col = 0; col < numCols; col++)
                     {
                         if (textIndex < filteredText.Length)
                         {
-                            table[r, c] = filteredText[textIndex++];
+                            table[row, col] = filteredText[textIndex];
+                            textIndex++;
                         }
                         else
                         {
-                            table[r, c] = RussianAlphabet[paddingCount % RussianAlphabet.Length];
-                            paddingCount++;
+                            // Текст закончился - заполняем пустые ячейки буквами по порядку
+                            table[row, col] = RussianAlphabet[(row * numCols + col - filteredText.Length) % RussianAlphabet.Length];
                         }
                     }
                 }
 
-                Debug.WriteLine("\n4. Заполненная таблица:");
+                // Определяем порядок чтения столбцов на основе ключа
+                int[] columnOrder = new int[numCols];
 
-                string keyHeader = "   ";
-                for (int c = 0; c < numCols; c++)
+                // Создаем массив для сортировки
+                int[] keyIndices = new int[numCols];
+                for (int i = 0; i < numCols; i++)
                 {
-                    keyHeader += $" {filteredKey[c]}  ";
+                    keyIndices[i] = i;
                 }
-                Debug.WriteLine(keyHeader);
 
-
-                // Выводим строки таблицы
-                for (int r = 0; r < numRows; r++)
+                // Сортируем пузырьком (keyIndices содержит порядок чтения столбцов)
+                for (int i = 0; i < numCols - 1; i++)
                 {
-                    string rowStr = $"{r + 1,2} |";
-                    for (int c = 0; c < numCols; c++)
+                    for (int j = 0; j < numCols - i - 1; j++)
                     {
-                        rowStr += $" {table[r, c]}  ";
+                        if (filteredKey[keyIndices[j]] > filteredKey[keyIndices[j + 1]])
+                        {
+                            int temp = keyIndices[j];
+                            keyIndices[j] = keyIndices[j + 1];
+                            keyIndices[j + 1] = temp;
+                        }
                     }
-                    Debug.WriteLine(rowStr);
                 }
-                
 
-                var sortedColumns = keyWithOccurrences
-                    .OrderBy(x => x.letter)
-                    .ThenBy(x => x.occurrence)
-                    .ToList();
+                // Читаем столбцы в этом порядке
+                string cipherText = "";
 
-                // Чтение столбцов
-                StringBuilder cipherText = new StringBuilder();
-                
-                foreach (var col in sortedColumns)
+                for (int i = 0; i < numCols; i++)
                 {
-                    int colIndex = col.originalIndex;
-                    string columnData = "";
-                    for (int r = 0; r < numRows; r++)
+                    int colToRead = keyIndices[i];
+
+                    for (int row = 0; row < numRows; row++)
                     {
-                        cipherText.Append(table[r, colIndex]);
-                        columnData += table[r, colIndex];
+                        cipherText += table[row, colToRead];
                     }
-                    
                 }
 
-                string result = cipherText.ToString();
-                Debug.WriteLine($"\n7. РЕЗУЛЬТАТ: {result}");
-
-                return result;
+                return cipherText;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.WriteLine($"ОШИБКА: {ex.Message}");
                 return "ОШИБКА";
             }
         }
 
+        // Расшифрование Столбцового метода
         public static string ColumnarDecrypt(string cipherText, string key)
         {
             try
             {
-                Debug.WriteLine("\nСТОЛБЦОВЫЙ МЕТОД (ДЕШИФРОВАНИЕ)");
-
-                if (OriginalTextLength == 0)
-                {
-                    Debug.WriteLine(" Ошибка! ");
-                }
-                else
-                {
-                    Debug.WriteLine($"0. Длина: {OriginalTextLength}");
-                }
-
                 // Фильтруем шифротекст
                 string filteredText = FilterRussianText(cipherText);
                 if (string.IsNullOrEmpty(filteredText)) return "";
-                Debug.WriteLine($"1. Шифротекст: {filteredText}");
 
+                // Фильтруем ключ
                 string filteredKey = FilterRussianText(key);
                 if (string.IsNullOrEmpty(filteredKey))
                 {
-                    string errorMsg = "ОШИБКА: Ключ не содержит ни одной русской буквы!";
-                    Debug.WriteLine(errorMsg);
                     throw new ArgumentException("Ключ должен содержать хотя бы одну русскую букву");
                 }
-                ;
 
-                var keyWithOccurrences = ProcessKeyWithOccurrences(filteredKey);
-                Debug.WriteLine($"2. Ключ: {filteredKey}");
-
+                // Определяем размеры таблицы
                 int numCols = filteredKey.Length;
                 int numRows = (int)Math.Ceiling((double)filteredText.Length / numCols);
-                Debug.WriteLine($"3. Размер: {numRows}× {numCols}");
 
-                var sortedKey = keyWithOccurrences
-                    .OrderBy(x => x.letter)
-                    .ThenBy(x => x.occurrence)
-                    .ToList();
+                // Определяем порядок чтения столбцов
+                int[] keyIndices = new int[numCols];
+                for (int i = 0; i < numCols; i++)
+                {
+                    keyIndices[i] = i;
+                }
+
+                // Сортируем пузырьком
+                for (int i = 0; i < numCols - 1; i++)
+                {
+                    for (int j = 0; j < numCols - i - 1; j++)
+                    {
+                        if (filteredKey[keyIndices[j]] > filteredKey[keyIndices[j + 1]])
+                        {
+                            int temp = keyIndices[j];
+                            keyIndices[j] = keyIndices[j + 1];
+                            keyIndices[j + 1] = temp;
+                        }
+                    }
+                }
 
                 char[,] table = new char[numRows, numCols];
 
-                // Заполняем таблицу по столбцам
+                // Заполняем таблицу по столбцам из шифротекста
                 int textIndex = 0;
 
-                foreach (var item in sortedKey)
+                for (int i = 0; i < numCols; i++)
                 {
-                    int colToWrite = item.originalIndex;
-                    string columnData = "";
-                    for (int r = 0; r < numRows; r++)
+                    int colToWrite = keyIndices[i];
+
+                    for (int row = 0; row < numRows; row++)
                     {
                         if (textIndex < filteredText.Length)
                         {
-                            table[r, colToWrite] = filteredText[textIndex++];
+                            table[row, colToWrite] = filteredText[textIndex];
+                            textIndex++;
                         }
                         else
                         {
-                            table[r, colToWrite] = '?';
+                            table[row, colToWrite] = '?';
                         }
-                        columnData += table[r, colToWrite];
                     }
-                }
-
-                string keyHeader = "   ";
-                for (int c = 0; c < numCols; c++)
-                {
-                    keyHeader += $" {filteredKey[c]}  ";
-                }
-                Debug.WriteLine(keyHeader);
-
-                for (int r = 0; r < numRows; r++)
-                {
-                    string rowStr = $"{r + 1,2} |";
-                    for (int c = 0; c < numCols; c++)
-                    {
-                        rowStr += $" {table[r, c]}  ";
-                    }
-                    Debug.WriteLine(rowStr);
                 }
 
                 // Читаем таблицу построчно
-                StringBuilder plainText = new StringBuilder();
-                for (int r = 0; r < numRows; r++)
+                string plainText = "";
+
+                for (int row = 0; row < numRows; row++)
                 {
-                    string rowData = "";
-                    for (int c = 0; c < numCols; c++)
+                    for (int col = 0; col < numCols; col++)
                     {
-                        plainText.Append(table[r, c]);
-                        rowData += table[r, c];
+                        plainText += table[row, col];
                     }
                 }
 
-                string fullText = plainText.ToString();
-                string result;
-
-                if (OriginalTextLength > 0 && OriginalTextLength <= fullText.Length)
+                // Обрезаем до нужной длины
+                if (OriginalTextLength > 0 && OriginalTextLength <= plainText.Length)
                 {
-                    result = fullText.Substring(0, OriginalTextLength);
-                }
-                else
-                {
-                    result = fullText.TrimEnd(RussianAlphabet.ToCharArray());
+                    plainText = plainText.Substring(0, OriginalTextLength);
                 }
 
-                return result;
+                return plainText;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.WriteLine($"ОШИБКА: {ex.Message}");
                 return "ОШИБКА";
             }
         }
 
-        //ШИФР ВИЖЕНЕР
+        // Шифрование Виженером
         public static string VigenereEncrypt(string plainText, string key)
         {
             try
             {
-                Debug.WriteLine("\nШИФР ВИЖЕНЕРА (ШИФРОВАНИЕ)");
-
+                // Фильтруем текст
                 string filteredText = FilterRussianText(plainText);
                 if (string.IsNullOrEmpty(filteredText)) return "";
 
                 OriginalTextLength = filteredText.Length;
-                Debug.WriteLine($"Текст: {filteredText} (длина: {OriginalTextLength})");
 
+                // Фильтруем ключ
                 string filteredKey = FilterRussianText(key);
-                if(string.IsNullOrEmpty(filteredKey))
-        {
-                    string errorMsg = "ОШИБКА: Ключ не содержит ни одной русской буквы!";
-                    Debug.WriteLine(errorMsg);
+                if (string.IsNullOrEmpty(filteredKey))
+                {
                     return "ОШИБКА: Ключ не содержит ни одной русской буквы!";
                 }
-                
-                Debug.WriteLine($"Ключ: {filteredKey}");
 
-                List<char> keyStream = new List<char>(filteredKey.ToCharArray());
-                StringBuilder result = new StringBuilder();
+                // Создаем ключ (самогенерирующийся)
+                char[] keyStream = new char[filteredText.Length];
 
-                Debug.WriteLine("\n3. Процесс шифрования:");
-                Debug.WriteLine("   i | Текст | Индекс | Ключ | Индекс | Сумма | Результат");
-                Debug.WriteLine("   -------------------------------------------------");
+                for (int i = 0; i < filteredKey.Length && i < filteredText.Length; i++)
+                {
+                    keyStream[i] = filteredKey[i];
+                }
+
+                // Шифруем
+                string result = "";
 
                 for (int i = 0; i < filteredText.Length; i++)
                 {
                     int pIndex = GetLetterIndex(filteredText[i]);
+
                     int kIndex = GetLetterIndex(keyStream[i]);
 
-                    int cIndex = (pIndex + kIndex) % RussianAlphabet.Length;
+                    // Складываем индексы (Ci = Pi + Ki mod 33)
+                    int cIndex = (pIndex + kIndex) % 33;
                     char cipherChar = GetLetterByIndex(cIndex);
 
-                    result.Append(cipherChar);
-                    keyStream.Add(filteredText[i]);
+                    result += cipherChar;
 
-                    Debug.WriteLine($"   {i,2} | {filteredText[i]}     | {pIndex,3}   | {keyStream[i]}     | {kIndex,3}   | {pIndex + kIndex,3}   | {cipherChar}");
+                    // Добавляем текущую букву текста в ключ
+                    if (i + filteredKey.Length < filteredText.Length)
+                    {
+                        keyStream[i + filteredKey.Length] = filteredText[i];
+                    }
                 }
 
-                Debug.WriteLine($"\n4. РЕЗУЛЬТАТ: {result}");
-                return result.ToString();
+                return result;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.WriteLine($"ОШИБКА: {ex.Message}");
                 return "ОШИБКА";
             }
         }
 
+        // Дешифрование Виженера
         public static string VigenereDecrypt(string cipherText, string key)
         {
             try
             {
-                Debug.WriteLine("\nШИФР ВИЖЕНЕРА (ДЕШИФРОВАНИЕ)");
-
+                // Фильтруем шифротекст
                 string filteredCipher = FilterRussianText(cipherText);
                 if (string.IsNullOrEmpty(filteredCipher)) return "";
-                Debug.WriteLine($"1. Шифротекст: {filteredCipher}");
 
+                // Фильтруем ключ
                 string filteredKey = FilterRussianText(key);
                 if (string.IsNullOrEmpty(filteredKey))
                 {
-                    string errorMsg = "ОШИБКА: Ключ не содержит ни одной русской буквы!";
-                    Debug.WriteLine(errorMsg);
                     return "ОШИБКА: Ключ не содержит ни одной русской буквы!";
                 }
 
-                Debug.WriteLine($"2. Ключ: {filteredKey}");
+                // Создаем ключ
+                char[] keyStream = new char[filteredCipher.Length];
 
-                List<char> keyStream = new List<char>(filteredKey.ToCharArray());
-                StringBuilder result = new StringBuilder();
+                for (int i = 0; i < filteredKey.Length && i < filteredCipher.Length; i++)
+                {
+                    keyStream[i] = filteredKey[i];
+                }
 
-                Debug.WriteLine("\n3. Процесс дешифрования:");
-                Debug.WriteLine("   i | Шифр | Индекс | Ключ | Индекс | Разность | Результат");
-                Debug.WriteLine("   ----------------------------------------------------");
+                // Дешифруем
+                string result = "";
 
                 for (int i = 0; i < filteredCipher.Length; i++)
                 {
                     int cIndex = GetLetterIndex(filteredCipher[i]);
+
                     int kIndex = GetLetterIndex(keyStream[i]);
 
-                    int pIndex = (cIndex - kIndex + RussianAlphabet.Length) % RussianAlphabet.Length;
+                    // Вычитаем индексы (Pi = Ci - Ki mod 33)
+                    int pIndex = (cIndex - kIndex + 33) % 33;
                     char plainChar = GetLetterByIndex(pIndex);
 
-                    result.Append(plainChar);
-                    keyStream.Add(plainChar);
+                    result += plainChar;
 
-                    Debug.WriteLine($"   {i,2} | {filteredCipher[i]}     | {cIndex,3}   | {keyStream[i]}     | {kIndex,3}   | {cIndex - kIndex,5}   | {plainChar}");
+                    // Добавляем расшифрованную букву в ключ
+                    if (i + filteredKey.Length < filteredCipher.Length)
+                    {
+                        keyStream[i + filteredKey.Length] = plainChar;
+                    }
                 }
 
-                Debug.WriteLine($"\n4. РЕЗУЛЬТАТ: {result}");
-                return result.ToString();
+                return result;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.WriteLine($"ОШИБКА: {ex.Message}");
                 return "ОШИБКА";
             }
         }
