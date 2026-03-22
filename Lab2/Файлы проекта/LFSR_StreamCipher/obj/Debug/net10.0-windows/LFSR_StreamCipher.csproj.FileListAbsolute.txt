@@ -1,0 +1,16 @@
+D:\4 сем\ТИ\2\LFSR_StreamCipher\LFSR_StreamCipher\obj\Debug\net10.0-windows\LFSR_StreamCipher.Form1.resources
+D:\4 сем\ТИ\2\LFSR_StreamCipher\LFSR_StreamCipher\obj\Debug\net10.0-windows\LFSR_StreamCipher.csproj.GenerateResource.cache
+D:\4 сем\ТИ\2\LFSR_StreamCipher\LFSR_StreamCipher\obj\Debug\net10.0-windows\LFSR_StreamCipher.GeneratedMSBuildEditorConfig.editorconfig
+D:\4 сем\ТИ\2\LFSR_StreamCipher\LFSR_StreamCipher\obj\Debug\net10.0-windows\LFSR_StreamCipher.AssemblyInfoInputs.cache
+D:\4 сем\ТИ\2\LFSR_StreamCipher\LFSR_StreamCipher\obj\Debug\net10.0-windows\LFSR_StreamCipher.AssemblyInfo.cs
+D:\4 сем\ТИ\2\LFSR_StreamCipher\LFSR_StreamCipher\obj\Debug\net10.0-windows\LFSR_StreamCipher.csproj.CoreCompileInputs.cache
+D:\4 сем\ТИ\2\LFSR_StreamCipher\LFSR_StreamCipher\bin\Debug\net10.0-windows\LFSR_StreamCipher.exe
+D:\4 сем\ТИ\2\LFSR_StreamCipher\LFSR_StreamCipher\bin\Debug\net10.0-windows\LFSR_StreamCipher.deps.json
+D:\4 сем\ТИ\2\LFSR_StreamCipher\LFSR_StreamCipher\bin\Debug\net10.0-windows\LFSR_StreamCipher.runtimeconfig.json
+D:\4 сем\ТИ\2\LFSR_StreamCipher\LFSR_StreamCipher\bin\Debug\net10.0-windows\LFSR_StreamCipher.dll
+D:\4 сем\ТИ\2\LFSR_StreamCipher\LFSR_StreamCipher\bin\Debug\net10.0-windows\LFSR_StreamCipher.pdb
+D:\4 сем\ТИ\2\LFSR_StreamCipher\LFSR_StreamCipher\obj\Debug\net10.0-windows\LFSR_StreamCipher.dll
+D:\4 сем\ТИ\2\LFSR_StreamCipher\LFSR_StreamCipher\obj\Debug\net10.0-windows\refint\LFSR_StreamCipher.dll
+D:\4 сем\ТИ\2\LFSR_StreamCipher\LFSR_StreamCipher\obj\Debug\net10.0-windows\LFSR_StreamCipher.pdb
+D:\4 сем\ТИ\2\LFSR_StreamCipher\LFSR_StreamCipher\obj\Debug\net10.0-windows\LFSR_StreamCipher.genruntimeconfig.cache
+D:\4 сем\ТИ\2\LFSR_StreamCipher\LFSR_StreamCipher\obj\Debug\net10.0-windows\ref\LFSR_StreamCipher.dll
