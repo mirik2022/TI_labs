@@ -1,0 +1,85 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\4 \u0441\u0435\u043C\\\u0422\u0418\\3\\RabinCryptoSys\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{59D59AF7-D4C4-CA0F-6285-1D65AB623690}|RabinCryptoSys\\RabinCryptoSys.csproj|d:\\4 \u0441\u0435\u043C\\\u0442\u0438\\3\\rabincryptosys\\rabincryptosys\\rabinmath.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{59D59AF7-D4C4-CA0F-6285-1D65AB623690}|RabinCryptoSys\\RabinCryptoSys.csproj|solutionrelative:rabincryptosys\\rabinmath.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{59D59AF7-D4C4-CA0F-6285-1D65AB623690}|RabinCryptoSys\\RabinCryptoSys.csproj|d:\\4 \u0441\u0435\u043C\\\u0442\u0438\\3\\rabincryptosys\\rabincryptosys\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{59D59AF7-D4C4-CA0F-6285-1D65AB623690}|RabinCryptoSys\\RabinCryptoSys.csproj|solutionrelative:rabincryptosys\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{936E35D2-3379-4021-88DA-CB9A2A103E3D}|RabinCryptoSys\\RabinCryptoSys.csproj|D:\\4 \u0441\u0435\u043C\\\u0422\u0418\\3\\RabinCryptoSys\\rabincryptosys\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{936E35D2-3379-4021-88DA-CB9A2A103E3D}|RabinCryptoSys\\RabinCryptoSys.csproj|solutionrelative:rabincryptosys\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{59D59AF7-D4C4-CA0F-6285-1D65AB623690}|RabinCryptoSys\\RabinCryptoSys.csproj|d:\\4 \u0441\u0435\u043C\\\u0442\u0438\\3\\rabincryptosys\\rabincryptosys\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{59D59AF7-D4C4-CA0F-6285-1D65AB623690}|RabinCryptoSys\\RabinCryptoSys.csproj|solutionrelative:rabincryptosys\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Form1.Designer.cs",
+              "DocumentMoniker": "D:\\4 \u0441\u0435\u043C\\\u0422\u0418\\3\\RabinCryptoSys\\RabinCryptoSys\\Form1.Designer.cs",
+              "RelativeDocumentMoniker": "RabinCryptoSys\\Form1.Designer.cs",
+              "ToolTip": "D:\\4 \u0441\u0435\u043C\\\u0422\u0418\\3\\RabinCryptoSys\\RabinCryptoSys\\Form1.Designer.cs",
+              "RelativeToolTip": "RabinCryptoSys\\Form1.Designer.cs",
+              "ViewState": "AgIAAEEBAAAAAAAAAAAAAFgBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-16T20:32:39.054Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Form1.cs",
+              "DocumentMoniker": "D:\\4 \u0441\u0435\u043C\\\u0422\u0418\\3\\RabinCryptoSys\\RabinCryptoSys\\Form1.cs",
+              "RelativeDocumentMoniker": "RabinCryptoSys\\Form1.cs",
+              "ToolTip": "D:\\4 \u0441\u0435\u043C\\\u0422\u0418\\3\\RabinCryptoSys\\RabinCryptoSys\\Form1.cs",
+              "RelativeToolTip": "RabinCryptoSys\\Form1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-16T20:02:23.95Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RabinMath.cs",
+              "DocumentMoniker": "D:\\4 \u0441\u0435\u043C\\\u0422\u0418\\3\\RabinCryptoSys\\RabinCryptoSys\\RabinMath.cs",
+              "RelativeDocumentMoniker": "RabinCryptoSys\\RabinMath.cs",
+              "ToolTip": "D:\\4 \u0441\u0435\u043C\\\u0422\u0418\\3\\RabinCryptoSys\\RabinCryptoSys\\RabinMath.cs",
+              "RelativeToolTip": "RabinCryptoSys\\RabinMath.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-16T20:01:10.391Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Form1.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
+              "DocumentMoniker": "D:\\4 \u0441\u0435\u043C\\\u0422\u0418\\3\\RabinCryptoSys\\RabinCryptoSys\\Form1.cs",
+              "RelativeDocumentMoniker": "RabinCryptoSys\\Form1.cs",
+              "ToolTip": "D:\\4 \u0441\u0435\u043C\\\u0422\u0418\\3\\RabinCryptoSys\\RabinCryptoSys\\Form1.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
+              "RelativeToolTip": "RabinCryptoSys\\Form1.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-16T19:58:30.719Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
